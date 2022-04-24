@@ -1,6 +1,5 @@
 logs/POST.log
 venv
-__pycache__
-__pycache__/receiver.cpython-38.pyc
+__pycache__/
 notater
-receiver.pyc
+*.pyc
