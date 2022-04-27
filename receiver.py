@@ -24,7 +24,7 @@ def logEvents(event):
 
     # This defines the format of the log-event. 'a' means append, 
     # which means the message is appended into the file POST.log
-    logging.basicConfig(filename=r"/var/www/webhook/logs/POST.log", 
+    logging.basicConfig(filename=r"/var/www/postreceiver/logs/POST.log", 
             format='%(asctime)s %(levelname)s %(message)s', filemode='a')
 
     # defining the log-object that actually logs the message
