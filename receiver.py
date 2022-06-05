@@ -3,10 +3,10 @@ import json, logging, subprocess, os
 
 app = Flask(__name__)
 
+@app.route('/webhook',methods=['POST'])
+
 # Converts json payload to dictionary
 data = json.loads(request.data)
-
-@app.route('/webhook',methods=['POST'])
 
 # The function that handles the POST-request
 def deployWebsite():
