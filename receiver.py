@@ -5,21 +5,22 @@ app = Flask(__name__)
 
 @app.route('/webhook',methods=['POST'])
 
-# Converts json payload to dictionary
-data = json.loads(request.data)
-
 # The function that handles the POST-request
 def deployWebsite():
-   logmsg = "New commit by: {}".format(data['commits'][0]['author']['name'])
-
-   # Verifies the payload, executes the commands and logs the event
-   if request.method == 'POST':
+    
+    # Converts json payload to dictionary
+    data = json.loads(request.data)
+   
+    logmsg = "New commit by: {}".format(data['commits'][0]['author']['name'])
+   
+    # Verifies the payload, executes the commands and logs the event
+    if request.method == 'POST':
        if verify_signature(data):
            subprocess.call(['sh', '../build_site.sh'])
            logEvents(logmsg)
            return 'Success', 200
        return 'Signatures did not match!', 500
-   return 'Not allowed', 405
+    return 'Not allowed', 405
 
 # function that defines how events are logged
 def logEvents(event):
