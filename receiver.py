@@ -39,12 +39,12 @@ def logEvents(event):
     logger.setLevel(logging.DEBUG)
     logger.debug(event)
 
-# Githubs recommended function to verify JSON POST payloads
+
 def verify_signature(data):
     print ("Verifying secret token...")
     received_sign = data.headers.get('X-Hub-Signature-256').split('sha256=')[-1].strip()
-    secret = os.environ['SECRET_KEY']
-    expected_sign = HMAC(key=secret, msg=data.data, digestmod=sha256).hexdigest()
+    secret = os.environ['SECRET_KEY'].encode()
+    expected_sign = HMAC(key=secret, msg=data.encode(), digestmod=hashlib.sha256).hexdigest()
     return compare_digest(received_sign, expected_sign)
 
 if __name__ == '__main__':
