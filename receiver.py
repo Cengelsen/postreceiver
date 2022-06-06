@@ -1,7 +1,6 @@
 from flask import Flask, request
-from hmac import HMAC, compare_digest
 from hashlib import sha256
-import json, logging, subprocess, os
+import json, logging, subprocess, os, hmac
 
 app = Flask(__name__)
 
@@ -11,8 +10,9 @@ app = Flask(__name__)
 def deployWebsite():
     
     # Converts json payload to dictionary
-    data = json.loads(request.data)
-   
+    data = json.loads(request.json)
+    head = json.loads(request.headers)
+    
     logmsg = "New commit by: {}".format(data['commits'][0]['author']['name'])
    
     # Verifies the payload, executes the commands and logs the event
@@ -42,9 +42,11 @@ def logEvents(event):
 
 def verify_signature(data):
     print ("Verifying secret token...")
-    received_sign = data.headers.get('X-Hub-Signature-256').split('sha256=')[-1].strip()
+    
+    received_sign = head['X-Hub-Signature-256']
+    #received_sign = data.headers.get('X-Hub-Signature-256').split('sha256=')[-1].strip()
     secret = os.environ['SECRET_KEY'].encode()
-    expected_sign = HMAC(key=secret, msg=data.encode(), digestmod=hashlib.sha256).hexdigest()
+    expected_sign = 'sha256=' + HMAC(key=secret, msg=data.encode(), digestmod=hashlib.sha256).hexdigest()
     return compare_digest(received_sign, expected_sign)
 
 if __name__ == '__main__':
