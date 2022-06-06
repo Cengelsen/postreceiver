@@ -3,3 +3,4 @@ venv
 __pycache__/
 notater
 *.pyc
+.env.local.json
