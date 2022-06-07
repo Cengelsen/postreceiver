@@ -19,16 +19,15 @@ def deployWebsite():
     # Verifies the payload, executes the commands and logs the event
     if request.method == 'POST':
        if verify_signature(data, head):
-           print("Secret token verified")
            subprocess.call(['sh', '../build_site.sh'])
            logEvents(logmsg)
-           return 'Success', 200
+           return 200
        else:
-           logmsg = "dette er header: " + head.get('X-Hub-Signature-256').strip()
-           logEvents(logmsg)
-           return 'Signatures did not match!', 500
+           logEvents("Signatures did not match")
+           return 500
     else:
-        return 'Not allowed', 405
+        logEvents("This request is not allowed")
+        return 405
 
 # function that defines how events are logged
 def logEvents(event):
@@ -51,11 +50,8 @@ def verify_signature(data, head):
     with open('.env.local.json', 'r') as token:
         secret = json.load(token)
     
-    logmsg = "Dette er secret: " + secret['SECRET_TOKEN']
-    logEvents(logmsg)
-
     # Generates a hexadecimal based on secret token and request payload
-    expected_sign = 'sha256=' + HMAC(key=bytes(secret['SECRET_TOKEN'], 'utf-8'), msg=bytes(request.data, 'utf-8'), digestmod=hashlib.sha256).hexdigest()
+    expected_sign = 'sha256=' + HMAC(key=bytes(secret['SECRET_TOKEN'], 'utf-8'), msg=request.get_data(), digestmod=hashlib.sha256).hexdigest()
 
     logmsg = "Dette er hmac: " + expected_sign
     logEvents(logmsg)
