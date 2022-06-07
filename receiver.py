@@ -29,14 +29,14 @@ def deployWebsite():
         logEvents("This request is not allowed")
         return 405
 
-# function that defines how events are logged
+# Function that defines how events are logged
 def logEvents(event):
 
     # This defines the format of the locally stored log-event. 
     logging.basicConfig(filename=r"/var/www/postreceiver/logs/POST.log", 
             format='%(asctime)s %(levelname)s %(message)s', filemode='a')
 
-    # creates the log-object
+    # Creates the log-object
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
     logger.debug(event)
@@ -44,6 +44,7 @@ def logEvents(event):
 
 def verify_signature(data, head):
     
+    # Fetches signature from POST-payload
     received_sign = head.get('X-Hub-Signature-256').strip()
 
     # Opens local json-file and converts to dictionary
@@ -53,8 +54,7 @@ def verify_signature(data, head):
     # Generates a hexadecimal based on secret token and request payload
     expected_sign = 'sha256=' + HMAC(key=bytes(secret['SECRET_TOKEN'], 'utf-8'), msg=request.get_data(), digestmod=hashlib.sha256).hexdigest()
 
-    logmsg = "Dette er hmac: " + expected_sign
-    logEvents(logmsg)
+    # Verifies the signatures using a secure function
     return compare_digest(received_sign, expected_sign)
 
 if __name__ == '__main__':
