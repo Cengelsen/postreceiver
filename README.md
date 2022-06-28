@@ -49,7 +49,7 @@ After the file is saved, remember to run ```sudo systemctl daemon-reload```, bef
 
 ## The Nginx config
 
-This is what was required to enable NGINX to proxy the POST-payload to the localhost
+This is what was required to enable NGINX to proxy the POST-payload to the localhost.
 
 ```sh
 location /webhook {
@@ -58,4 +58,18 @@ location /webhook {
 }
 ```
 
-## Please create issues for this repo if you see room for improvements :)
+## Payload verification
+
+This script also contains a verification function. This limits the serverlocal commands to only be executed when the head of the POST-payload contains a special signature. This way, only the owner of the repo (and others who know the secret token) can trigger the serverlocal commands. 
+
+I followed [this guide](https://docs.github.com/en/developers/webhooks-and-events/webhooks/securing-your-webhooks#validating-payloads-from-github)
+
+You can use Ruby to create the token. I then gave this secret token to the webhook in github, and github generated a hexadecimal SHA256-signature and placed it in the header of the POST-request.
+
+In order to verify the request serverside, you need to compare the received signature with a locally generated signature.
+
+NB: it's important to include the entire payload when generating the local key, otherwise the request-signature will be longer the the local key. 
+
+NBB: The HMAC-function requires the key and msg parameters to both be a bytes, or bytearray, object. 
+
+## Feel free to create issues for this repo if you see room for improvements :)
