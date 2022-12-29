@@ -30,7 +30,7 @@ Here is an example for a system file:
 
 ```sh
 [Unit]
-Description= <Name of service>
+Description= <Short description of service>
 After=network.target
 
 [Service]
@@ -45,7 +45,7 @@ WantedBy=multi-user.target
 
 Save this in a file located in the service-folder, with a ```.service```-extension. For an ubuntu 20.04 server, the folder would be ```etc/systemd/system/```. 
 
-After the file is saved, remember to run ```sudo systemctl daemon-reload```, before starting the service. 
+After the file is saved, remember to run ```sudo systemctl daemon-reload```, before starting the service. Follow this up with ```sudo systemctl enable <name of service-file>``` to enable the service starting on boot.
 
 ## The Nginx config
 
